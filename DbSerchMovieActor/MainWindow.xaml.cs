@@ -29,13 +29,45 @@ namespace DbSerchMovieActor
         //search movie
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (searchMovie != null)
+            if (searchMovie.Text != null && searchMovie.Text != "")
             {
-
+                using (var connection = new NpgsqlConnection("Host=localhost;Username=student;Password=student;Database=vorlesung"))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT title FROM movies WHERE metaphone(title,8) % metaphone(@p, 8) ORDER BY levenshtein(lower(@p), lower(title)); ";
+                        cmd.Parameters.AddWithValue("p", searchMovie.Text);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                result.Text += reader.GetString(0) + "\n";
+                            }
+                        }
+                    }
+                }
             }
-            else
+            if(searchActor.Text != null && searchActor.Text != "")
             {
-                return;
+                using (var connection = new NpgsqlConnection("Host=localhost;Username=student;Password=student;Database=vorlesung"))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT title FROM movies NATURAL JOIN movies_actors NATURAL JOIN actors WHERE metaphone(name,6) = metaphone(@p,6);";
+                        cmd.Parameters.AddWithValue("p", searchActor.Text);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                result.Text += reader.GetString(0) + "\n";
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -51,7 +83,7 @@ namespace DbSerchMovieActor
         //search actor
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (searchActor.Text != null)
+            if (searchActor.Text != null && searchActor.Text != "")
             {
                 using (var connection = new NpgsqlConnection("Host=localhost;Username=student;Password=student;Database=vorlesung"))
                 {
@@ -59,8 +91,28 @@ namespace DbSerchMovieActor
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT title FROM movies NATURAL JOIN movies_actors NATURAL JOIN actors WHERE metaphone(name,6) = metaphone(@p,6);";
+                        cmd.CommandText = "SELECT name FROM actors WHERE metaphone(name,8) % metaphone(@p, 8) ORDER BY levenshtein(lower(@p), lower(name)); ";
                         cmd.Parameters.AddWithValue("p", searchActor.Text);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                result.Text += reader.GetString(0) + "\n";
+                            }
+                        }
+                    }
+                }
+            }
+            if (searchMovie.Text != null && searchMovie.Text != "")
+            {
+                using (var connection = new NpgsqlConnection("Host=localhost;Username=student;Password=student;Database=vorlesung"))
+                {
+                    connection.Open();
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.CommandText = "SELECT name FROM actors NATURAL JOIN movies_actors NATURAL JOIN movies WHERE metaphone(title,6) = metaphone(@p,6);";
+                        cmd.Parameters.AddWithValue("p", searchMovie.Text);
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())

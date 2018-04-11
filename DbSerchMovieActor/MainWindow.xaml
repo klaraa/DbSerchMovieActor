@@ -1,0 +1,30 @@
+﻿<Window x:Class="DbSerchMovieActor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DbSerchMovieActor"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0" Name="searchMovie"></TextBox>
+        <Button Grid.Row="1" Click="Button_Click">Search movie</Button>
+        <Button Grid.Row="2" Click="Button_Click_1">Search movie direct</Button>
+        <TextBox Grid.Row="3" Name="searchActor"></TextBox>
+        <Button Grid.Row="4" Click="Button_Click_2">Search actor</Button>
+        <Button Grid.Row="5" Click="Button_Click_3">Search actor direct</Button>
+        <ScrollViewer Grid.Row="6">
+            <TextBlock  Name="result" ></TextBlock>
+        </ScrollViewer>
+
+    </Grid>
+</Window>

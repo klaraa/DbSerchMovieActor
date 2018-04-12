@@ -37,8 +37,10 @@ namespace DbSerchMovieActor
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT title FROM movies WHERE metaphone(title,8) % metaphone(@p, 8) ORDER BY levenshtein(lower(@p), lower(title)); ";
+                        cmd.CommandText = "SELECT title FROM movies WHERE title ILIKE @v OR title ~* @p OR metaphone(title,6) = metaphone(@p, 6) ; "; //ORDER BY levenshtein(lower(@p), lower(title))
                         cmd.Parameters.AddWithValue("p", searchMovie.Text);
+                        string movieLike = searchMovie.Text + "%";
+                        cmd.Parameters.AddWithValue("v", movieLike);
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())

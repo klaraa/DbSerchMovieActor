@@ -22,8 +22,8 @@
         <TextBox Grid.Row="3" Name="searchActor"></TextBox>
         <Button Grid.Row="4" Click="Button_Click_2">Search actor</Button>
         <Button Grid.Row="5" Click="Button_Click_3">Search actor direct</Button>
-        <ScrollViewer Grid.Row="6">
-            <TextBlock  Name="result" ></TextBlock>
+        <ScrollViewer Grid.Row="6" VerticalScrollBarVisibility="Auto" Height="300">
+            <TextBlock  Name="result"/>
         </ScrollViewer>
 
     </Grid>

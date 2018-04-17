@@ -29,6 +29,7 @@ namespace DbSerchMovieActor
         //search movie
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            result.Text = "";
             if (searchMovie.Text != null && searchMovie.Text != "")
             {
                 using (var connection = new NpgsqlConnection("Host=localhost;Username=student;Password=student;Database=vorlesung"))
@@ -37,7 +38,7 @@ namespace DbSerchMovieActor
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT title FROM movies WHERE title ILIKE @v OR title ~* @p OR metaphone(title,6) = metaphone(@p, 6) ; "; //ORDER BY levenshtein(lower(@p), lower(title))
+                        cmd.CommandText = "SELECT title FROM movies WHERE title ILIKE @v OR title ~* @p OR metaphone(title,6) = metaphone(@p, 6) GROUP BY movie_id; "; 
                         cmd.Parameters.AddWithValue("p", searchMovie.Text);
                         string movieLike = searchMovie.Text + "%";
                         cmd.Parameters.AddWithValue("v", movieLike);
@@ -59,7 +60,7 @@ namespace DbSerchMovieActor
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT title FROM movies NATURAL JOIN movies_actors NATURAL JOIN actors WHERE metaphone(name,6) = metaphone(@p,6);";
+                        cmd.CommandText = "SELECT title FROM movies NATURAL JOIN movies_actors NATURAL JOIN actors WHERE metaphone(name,6) = metaphone(@p,6) GROUP BY movie_id;";
                         cmd.Parameters.AddWithValue("p", searchActor.Text);
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -77,6 +78,7 @@ namespace DbSerchMovieActor
         //search movie direct
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            result.Text = "";
             List<string> titles = new List<string>();
             if (searchMovie.Text != null && searchMovie.Text != "")
             {
@@ -106,6 +108,7 @@ namespace DbSerchMovieActor
         //search actor
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            result.Text = "";
             if (searchActor.Text != null && searchActor.Text != "")
             {
                 using (var connection = new NpgsqlConnection("Host=localhost;Username=student;Password=student;Database=vorlesung"))
@@ -114,7 +117,7 @@ namespace DbSerchMovieActor
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT name FROM actors WHERE name ILIKE @v OR name ~* @p OR metaphone(name,8) % metaphone(@p, 8) ORDER BY levenshtein(lower(@p), lower(name)); ";
+                        cmd.CommandText = "SELECT name FROM actors WHERE name ILIKE @v OR name ~* @p OR metaphone(name,8) % metaphone(@p, 8) ORDER BY levenshtein(lower(@p), lower(name)) GROUP BY actor_id; ";
                         cmd.Parameters.AddWithValue("p", searchActor.Text);
                         string actorLike = searchActor.Text + "%";
                         cmd.Parameters.AddWithValue("v", actorLike);
@@ -136,7 +139,7 @@ namespace DbSerchMovieActor
                     using (var cmd = new NpgsqlCommand())
                     {
                         cmd.Connection = connection;
-                        cmd.CommandText = "SELECT name FROM actors NATURAL JOIN movies_actors NATURAL JOIN movies WHERE metaphone(title,6) = metaphone(@p,6);";
+                        cmd.CommandText = "SELECT name FROM actors NATURAL JOIN movies_actors NATURAL JOIN movies WHERE metaphone(title,6) = metaphone(@p,6) GROUP BY actor_id;";
                         cmd.Parameters.AddWithValue("p", searchMovie.Text);
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -155,6 +158,7 @@ namespace DbSerchMovieActor
         //search actor direct
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
+            result.Text = "";
             List<string> names = new List<string>();
             if (searchActor.Text != null && searchActor.Text != "")
             {
